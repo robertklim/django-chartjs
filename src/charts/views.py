@@ -1,3 +1,5 @@
+import requests
+
 from django.shortcuts import render
 from django.views.generic import View
 
@@ -13,9 +15,10 @@ class ChartData(APIView):
     permission_classes = []
 
     def get(self, request, format=None):
-        data = {
-            "a": 2,
-            "b": 4,
-            "c": 6,
-        }
-        return Response(data)
+        owner = 'django'
+        repo = 'django'
+        url = f'https://api.github.com/repos/{owner}/{repo}/stats/participation'
+
+        res = requests.get(url).json()
+
+        return Response(res)
