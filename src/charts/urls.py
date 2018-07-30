@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from .views import HomeView
+from .views import HomeView, ChartData
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeView.as_view(), name='home'),
+    path('api/chart/data/', ChartData.as_view(), name='api-chart-data'),
 ]
