@@ -4,29 +4,31 @@
 
     <nav>
         <div class="nav-wrapper">
-            <a href="#" class="brand-logo">
+            <a href="#" class="brand-logo center">
                 <i class="material-icons">bar_chart</i>
             </a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li>
-                    <a href="sass.html">Sass</a>
-                </li>
-                <li>
-                    <a href="badges.html">Components</a>
-                </li>
-                <li>
-                    <a href="collapsible.html">JavaScript</a>
-                </li>
-            </ul>
         </div>
     </nav>
 
-    <canvas id="myChart" width="400" height="400"></canvas>
+    <div class="row">
+        <div class="col s12 m12 l6">
+            <canvas id="barChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col s12 m12 l6">
+            <canvas id="radarChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col s12 m12 l6">
+            <canvas id="pieChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col s12 m12 l6">
+            <canvas id="polarAreaChart" width="400" height="400"></canvas>
+        </div>
+    </div>
 
     <script>
 
         var endpoint = '/api/chart/data/';
-        var data, labels;
+        var data, labels, colors;
 
         fetch(endpoint)
             .then(function (response) {
@@ -35,22 +37,28 @@
             .then(function (myJson) {
                 data = myJson.all;
                 labels = new Array(data.length);
+                colors = new Array(data.length);
                 for (i = 0; i < labels.length; i++) {
                     labels[i] = i + 1;
+                    colors[i] = getRandomColor();
                 }
-                showChart(data, labels);
+                showChart(data, labels, colors, 'bar', 'barChart');
+                showChart(data, labels, colors, 'radar', 'radarChart');
+                showChart(data, labels, colors, 'pie', 'pieChart');
+                showChart(data, labels, colors, 'polarArea', 'polarAreaChart');
             });
 
-        function showChart(data, labels){
-            var ctx = document.getElementById("myChart").getContext('2d');
+        function showChart(data, labels, colors, type='bar', canvasId){
+            var ctx = document.getElementById(canvasId).getContext('2d');
             var myChart = new Chart(ctx, {
-                type: 'bar',
+                type: type,
                 data: {
                     labels: labels,
                     datasets: [{
                         label: '# of commits',
                         data: data,
-                        borderWidth: 1
+                        borderWidth: 1,
+                        backgroundColor: colors,
                     }]
                 },
                 options: {
@@ -63,7 +71,16 @@
                     }
                 }
             });
-        }    
+        }
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
 
     </script>
 
